@@ -291,8 +291,9 @@ export var MarkerClusterGroup = L.MarkerClusterGroup = L.FeatureGroup.extend({
 			}, this);
 
 			process();
-		} else {
-			var needsClustering = this._needsClustering;
+    } else {
+      var needsClustering = new Array(l - offset); // improve performance by preallocating the maximum size of our array
+      var tail = 0;
 
 			for (; offset < l; offset++) {
 				m = layersArray[offset];
@@ -318,8 +319,10 @@ export var MarkerClusterGroup = L.MarkerClusterGroup = L.FeatureGroup.extend({
 					continue;
 				}
 
-				needsClustering.push(m);
+				needsClustering[tail++] = m;
 			}
+      needsClustering = needsClustering.slice(0, tail); // truncate empty elements
+      this._needsClustering = this._needsClustering.concat(needsClustering);
 		}
 		return this;
 	},
