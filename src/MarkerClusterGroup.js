@@ -1182,17 +1182,19 @@ export var MarkerClusterGroup = L.MarkerClusterGroup = L.FeatureGroup.extend({
 	 * @private
 	 */
 	_overrideMarkerIcon: function (layer) {
-		var icon = layer.options.icon = this.options.iconCreateFunction({
-			getChildCount: function () {
-				return 1;
-			},
-			getAllChildMarkers: function () {
-				return [layer];
-			}
-		});
+    var iconOptions = {
+      getChildCount: function () {
+        return 1;
+      },
+      getAllChildMarkers: function () {
+        return [layer];
+      }
+    }      
+    this.options.hydrateClusterSingleMarker && this.options.hydrateClusterSingleMarker(layer, iconOptions)
 
-		return icon;
-	}
+    var icon = layer.options.icon = this.options.iconCreateFunction({iconOptions: iconOptions});
+    return icon;
+  }
 });
 
 // Constant bounds used in case option "removeOutsideVisibleBounds" is set to false.
